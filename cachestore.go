@@ -46,7 +46,7 @@ func (c *CacheStore) GetStore(svcName string) *KVStore {
 // CreateStore creates a KV store for a service. Overwrites the old store if exists
 // Returns the created store
 func (c *CacheStore) CreateStore(svcName string) *KVStore {
-	kvstore := &KVStore{map[string]string{}, sync.RWMutex{}}
+	kvstore := NewKVStore()
 	c.mutex.Lock()
 	c.stores[svcName] = kvstore
 	c.mutex.Unlock()
@@ -62,7 +62,7 @@ func (c *CacheStore) DeleteStore(svcName string) {
 }
 
 // SetCache sets a KV pair in a service's KV store. Creates the store if not exists
-func (c *CacheStore) SetCache(svcName string, key string, value string) {
+func (c *CacheStore) SetCache(svcName string, key string, value interface{}) {
 	svcStore := c.GetStore(svcName)
 	if svcStore == nil {
 		svcStore = c.CreateStore(svcName)
@@ -73,7 +73,7 @@ func (c *CacheStore) SetCache(svcName string, key string, value string) {
 
 // GetCache gets the value for a given key in a service's KV store.
 // Returns "" if store not found, otherwise the value specified by key
-func (c *CacheStore) GetCache(svcName string, key string) string {
+func (c *CacheStore) GetCache(svcName string, key string) interface{} {
 	svcStore := c.GetStore(svcName)
 	if svcStore == nil {
 		return ""

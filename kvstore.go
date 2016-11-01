@@ -30,21 +30,21 @@ import (
 // KVStore represents a KV store for a service
 // Its Get() and Set() guarantee thread safety
 type KVStore struct {
-	// The KV store. Value is expected to be JSON serialized
-	storeMap map[string]string
+	// The KV store
+	storeMap map[string]interface{}
 	// The lock for this particular KV store
 	mutex sync.RWMutex
 }
 
 // Set sets a KV pair in the store
-func (store *KVStore) Set(key string, value string) {
+func (store *KVStore) Set(key string, value interface{}) {
 	store.mutex.Lock()
 	store.storeMap[key] = value
 	store.mutex.Unlock()
 }
 
 // Get gets the value associated with the key
-func (store *KVStore) Get(key string) string {
+func (store *KVStore) Get(key string) interface{} {
 	store.mutex.RLock()
 	val := store.storeMap[key]
 	store.mutex.RUnlock()
@@ -61,5 +61,5 @@ func (store *KVStore) MarshalJSON() ([]byte, error) {
 
 // NewKVStore creates a new KVStore
 func NewKVStore() *KVStore {
-	return &KVStore{map[string]string{}, sync.RWMutex{}}
+	return &KVStore{map[string]interface{}{}, sync.RWMutex{}}
 }

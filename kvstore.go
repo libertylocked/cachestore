@@ -51,6 +51,13 @@ func (store *KVStore) Get(key string) interface{} {
 	return val
 }
 
+// Delete deletes a KV pair from the store
+func (store *KVStore) Delete(key string) {
+	store.mutex.Lock()
+	delete(store.storeMap, key)
+	store.mutex.Unlock()
+}
+
 // MarshalJSON marshals a KVStore to a JSON object
 func (store *KVStore) MarshalJSON() ([]byte, error) {
 	store.mutex.RLock()

@@ -76,9 +76,17 @@ func (c *CacheStore) SetCache(svcName string, key string, value interface{}) {
 func (c *CacheStore) GetCache(svcName string, key string) interface{} {
 	svcStore := c.GetStore(svcName)
 	if svcStore == nil {
-		return ""
+		return nil
 	}
 	return svcStore.Get(key)
+}
+
+// DeleteCache deletes a KV pair in a service's KV store
+func (c *CacheStore) DeleteCache(svcName string, key string) {
+	svcStore := c.GetStore(svcName)
+	if svcStore != nil {
+		svcStore.Delete(key)
+	}
 }
 
 // MarshalJSON marshals a CacheStore as a JSON object
